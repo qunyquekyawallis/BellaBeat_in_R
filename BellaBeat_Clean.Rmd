@@ -1,0 +1,57 @@
+---
+title: "BellaBeat_clean"
+author: "Qunyquekya Wallis"
+date: '2022-06-30'
+output: html_document
+---
+
+#Importing necessary packages
+install.packages("tidyverse")
+install.packages("lubridate")
+install.packages("dplyr")
+install.packages("ggplot2")
+install.packages("tidyr")
+install.packages("janitor")
+
+#Access to necessary libraries
+library(tidyverse)
+library(lubridate)
+library(dplyr)
+library(ggplot2)
+library(tidyr)
+library(janitor)
+
+#Creating necessary dataframes
+daily_activity <- read.csv("TheDailyActivity_Data.csv")
+daily_sleep <- read.csv("BellaBeat in R/Daily_Sleep_Data.csv")
+
+#preview imported tables and column names to id any similar column names and to ensure table is uploaded
+head(daily_activity)
+colnames(daily_activity)
+
+head(daily_sleep)
+colnames(daily_sleep)
+
+#distinct users in tables
+n_distinct(daily_activity$Id)
+n_distinct(daily_sleep$Id)
+
+#identify the sum of the missing values present in tables
+sum(is.na(daily_activity))
+sum(is.na(daily_sleep))
+
+#identify the sum of duplicate values present in tables
+sum(duplicated(daily_activity))
+sum(duplicated(daily_sleep))
+
+#clean names of objects
+clean_names(daily_activity)
+clean_names(daily_sleep)
+
+#merge two tables by ID, Date, Weekday
+Sleep_And_Activity = merge(x=daily_activity,y=daily_sleep,by="Id", "Weekday" all=TRUE)
+Sleep_And_Activity
+
+#check merge for duplicates
+View(Sleep_And_Activity)
+sum(duplicated(Sleep_And_Activity))
