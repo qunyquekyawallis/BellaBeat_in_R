@@ -1,0 +1,95 @@
+#Importing necessary packages
+install.packages("tidyverse")
+install.packages("lubridate")
+install.packages("dplyr")
+install.packages("ggplot2")
+install.packages("tidyr")
+install.packages("janitor")
+
+#Access to necessary libraries
+library(tidyverse)
+library(lubridate)
+library(dplyr)
+library(ggplot2)
+library(tidyr)
+library(janitor)
+
+#Creating necessary dataframes
+daily_activity <- read.csv("TheDailyActivity_Data.csv")
+daily_sleep <- read.csv("BellaBeat in R/Daily_Sleep_Data.csv")
+
+#preview imported tables and column names to id any similar column names and to ensure table is uploaded
+head(daily_activity)
+colnames(daily_activity)
+
+head(daily_sleep)
+colnames(daily_sleep)
+
+#distinct users in tables
+n_distinct(daily_activity$Id)
+n_distinct(daily_sleep$Id)
+
+#identify the sum of the missing values present in tables
+sum(is.na(daily_activity))
+sum(is.na(daily_sleep))
+
+#identify the sum of duplicate values present in tables
+sum(duplicated(daily_activity))
+sum(duplicated(daily_sleep))
+
+#clean names of objects
+clean_names(daily_activity)
+clean_names(daily_sleep)
+
+#merge two tables by ID, Date, Weekday
+Sleep_And_Activity = merge(x=daily_activity,y=daily_sleep,by="Id", "Weekday" all=TRUE)
+Sleep_And_Activity
+
+#check merge for duplicates
+View(Sleep_And_Activity)
+sum(duplicated(Sleep_And_Activity))
+
+#plotting activity versus calories-sedentary
+ggplot(data = daily_activity, aes(x =SedentaryMinutes, y = Calories)) + 
+  geom_point()+ geom_smooth(method=lm)+
+  ggtitle("Calories vs. Sedentary Minutes") +
+  xlab("Minutes") + ylab("Calories")+ theme(plot.title = element_text(face="bold"))
+
+#plotting activity versus calories-light
+ggplot(data = daily_activity, aes(x =LightlyActiveMinutes, y = Calories)) + 
+  geom_point()+ geom_smooth(method=lm)+
+  ggtitle("Calories vs. Lightly Active Minutes") +
+  xlab("Minutes") + ylab("Calories")+ theme(plot.title = element_text(face="bold"))
+
+#plotting activity versus calories-fair
+ggplot(data = daily_activity, aes(x =FairlyActiveMinutes, y = Calories)) + 
+  geom_point()+ geom_smooth(method=lm)+
+  ggtitle("Calories vs. Fairly Active Minutes") +
+  xlab("Minutes") + ylab("Calories")+ theme(plot.title = element_text(face="bold"))
+
+#plotting activity versus calories-very
+ggplot(data = daily_activity, aes(x =VeryActiveMinutes, y = Calories)) + 
+  geom_point()+ geom_smooth(method=lm)+
+  ggtitle("Calories vs. Very Active Minutes") +
+  xlab("Minutes") + ylab("Calories") + theme(plot.title = element_text(face="bold"))
+
+#calories burned versus steps taken
+ggplot(data = daily_activity, aes(x =TotalSteps, y = Calories)) + 
+  geom_point()+ geom_smooth(method=lm)+
+  ggtitle("Calories vs. Total Steps Taken") +
+  xlab("Steps") + ylab("Calories")+ theme(plot.title = element_text(face="bold"))
+
+#calories versus total distance
+ggplot(data = daily_activity, aes(x =TotalDistance, y = Calories)) + 
+  geom_point()+ geom_smooth(method=lm)+
+  ggtitle("Calories vs. Total Distance") +
+  xlab("Distance (km)") + ylab("Calories") + theme(plot.title = element_text(face="bold"))
+
+#Entries per day of the week to show when device is worn the most 
+# put entries in chronological order
+ggplot(data = daily_activity)+
+  stat_count(mapping = aes(x = Weekday))+
+  ggtitle("Entries Per Day of the Week") +
+  xlab("Days of the Week") + ylab("Entries") + theme(plot.title = element_text(face="bold"))+
+  scale_x_discrete(limits = c("Monday", "Tuesday", "Wednesday", "Thursday","Friday", "Saturday","Sunday"))
+
